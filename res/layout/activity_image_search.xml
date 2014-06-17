@@ -1,0 +1,50 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="${packageName}.${activityClass}" >
+
+    <!-- <EditText
+        android:id="@+id/etSearch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="14dp"
+        android:layout_toLeftOf="@+id/btSearch"
+        android:ems="10"
+        android:hint="@string/query_hint" /> -->
+
+    <!-- <Button
+        android:id="@+id/btSearch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/etSearch"
+        android:layout_alignBottom="@+id/etSearch"
+        android:drawableLeft="@drawable/ic_action_search_btn"
+        android:onClick="onImageSearchClick"
+        android:layout_alignParentRight="true" /> -->
+
+    <GridView
+        android:id="@+id/gvImages"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_below="@+id/tvSearchInfo"
+        android:layout_marginTop="15dp"
+        android:fadeScrollbars="false"
+        android:numColumns="3"
+        android:scrollbars="vertical"
+        android:visibility="visible" >
+
+    </GridView>
+
+    <TextView
+        android:id="@+id/tvSearchInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginLeft="18dp" />
+
+</RelativeLayout>

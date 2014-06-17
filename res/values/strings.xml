@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">ImageSearch</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="query_hint">Enter Search Term</string>
+    <string name="title_activity_full_image_display">FullImageDisplayActivity</string>
+    <string name="title_activity_async_grid">AsyncGridActivity</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="search_hint">Google Image Search</string>
+
+</resources>
