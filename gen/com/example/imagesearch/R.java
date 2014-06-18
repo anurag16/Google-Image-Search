@@ -21,8 +21,8 @@ public final class R {
         public static final int etSiteFilter=0x7f08000b;
         public static final int gvImages=0x7f080002;
         public static final int ivFullDisplay=0x7f080000;
-        public static final int miActionBarIcon=0x7f08000e;
-        public static final int miSearch=0x7f08000f;
+        public static final int miActionBarIcon=0x7f08000f;
+        public static final int miSearch=0x7f08000e;
         public static final int spColorFilter=0x7f080007;
         public static final int spImageSize=0x7f080006;
         public static final int spImageType=0x7f08000a;

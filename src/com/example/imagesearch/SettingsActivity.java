@@ -8,8 +8,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -29,12 +27,16 @@ public class SettingsActivity extends Activity {
 	String colorFilter;
 	String imageType;
 	String siteFilter;
+	String searchTerm;
+	
 	private ShareActionProvider mShareActionProvider;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_settings);
+		
+		searchTerm = getIntent().getStringExtra("searchTerm");
 		
 		spImageSize = (Spinner) findViewById(R.id.spImageSize);
 		spColorFilter = (Spinner) findViewById(R.id.spColorFilter);
@@ -87,6 +89,7 @@ public class SettingsActivity extends Activity {
         imageSize = SearchSettings.getSearchSettings().getImageSize();
         colorFilter = SearchSettings.getSearchSettings().getColorFilter();
         imageType = SearchSettings.getSearchSettings().getImageType();
+        siteFilter = SearchSettings.getSearchSettings().getSiteFilter();
         
         //set values of the settings activity filters
         spImageSize.setSelection(lsImageSize.indexOf(imageSize), true);
@@ -162,6 +165,9 @@ public class SettingsActivity extends Activity {
 	
 	public void saveSettings(View v) {
 		SearchSettings.setSearchSettings(imageSize, colorFilter, imageType, siteFilter);
-		finish(); 
+		Intent i = new Intent(getApplicationContext(), ImageSearchActivity.class);
+		i.putExtra("searchTerm", searchTerm);
+		startActivity(i);	
+		//finish(); 
 	}
 }

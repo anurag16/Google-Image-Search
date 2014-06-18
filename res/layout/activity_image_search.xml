@@ -45,6 +45,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
+        android:textColor="#EC7703"
         android:layout_marginLeft="18dp" />
 
 </RelativeLayout>

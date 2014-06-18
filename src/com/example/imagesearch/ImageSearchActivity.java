@@ -8,8 +8,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
-import android.app.SearchManager;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -28,7 +26,7 @@ import android.widget.TextView;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
-public class ImageSearchActivity extends Activity{
+public class ImageSearchActivity extends Activity {
 
 	EditText etSearch;
 	Button btnSearch;
@@ -39,23 +37,28 @@ public class ImageSearchActivity extends Activity{
 	String searchStr = "";
 	Calendar calendar = null;
 	SearchSettings searchSettings;
+	boolean isDefault = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_image_search);
 
-		//etSearch = (EditText)findViewById(R.id.etSearch);
-		//btnSearch = (Button)findViewById(R.id.btSearch);
 		gvImages  = (GridView)findViewById(R.id.gvImages);
 
 		imageResults = new ArrayList<ImageResult>();
 		imageAdapter = new ImageResultsArrayAdapter(this, imageResults);
 		gvImages.setAdapter(imageAdapter);
 
-		searchSettings = SearchSettings.getSearchSettings();
-		handleSearchIntent(getIntent());
-
+		searchSettings = SearchSettings.getSearchSettings();		
+		
+		searchStr = getIntent().getStringExtra("searchTerm");
+		if(searchStr == null) { 
+			searchStr = "";
+			isDefault = true;
+		}
+		getImagesforSearchQuery(0);
+		
 		gvImages.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
@@ -79,42 +82,14 @@ public class ImageSearchActivity extends Activity{
 		});
 	}
 
-	@Override
-	protected void onNewIntent(Intent intent) {		
-		handleSearchIntent(intent);
-	}
-
-	private void handleSearchIntent(Intent intent) {
-		
-		if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-			searchStr = intent.getStringExtra(SearchManager.QUERY);			
-		}
-
-		if(searchStr.equals("")) {
-			if(calendar == null) {
-				calendar = Calendar.getInstance();
-			}
-			
-			int month = calendar.get(Calendar.MONTH);
-			if(month >=1 && month <=3 || month ==12 )
-				searchStr = "Winter Season";
-			else if(month >=4 && month <=7)
-				searchStr = "Summer Season";
-			else if(month >= 8 && month <= 11)
-				searchStr = "Fall Season";			
-		}
-
-		TextView searchInfo = (TextView) findViewById(R.id.tvSearchInfo);
-		searchInfo.setText("");
-		searchInfo.setText("Results for: " + searchStr);
-		
-		imageAdapter.clear();
-		imageResults.clear();
-		getImagesforSearchQuery(searchStr, 0);
-	}
+	/*private void showEditDialog() {
+	      FragmentManager fm = getSupportFragmentManager();
+	      EditNameDialog editNameDialog = EditNameDialog.newInstance("Some Title");
+	      editNameDialog.show(fm, "fragment_edit_name");
+	  }*/
 
 	public void customLoadMoreDataFromApi(int offset) {
-		getImagesforSearchQuery(searchStr, offset-1);
+		getImagesforSearchQuery(offset-1);
 	}
 
 	@Override
@@ -122,19 +97,43 @@ public class ImageSearchActivity extends Activity{
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
 
-		// Associate searchable configuration with the SearchView
-		SearchManager searchManager =
-				(SearchManager) getSystemService(Context.SEARCH_SERVICE);
-		SearchView searchView =
-				(SearchView) menu.findItem(R.id.miSearch).getActionView();
-		searchView.setSearchableInfo(
-				searchManager.getSearchableInfo(getComponentName()));
+		SearchView searchView = (SearchView) menu.findItem(R.id.miSearch).getActionView();
+		searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 
-		return true;
+			@Override
+			public boolean onQueryTextSubmit(String query) {
+				searchStr = query;
+				isDefault = false;
+				imageAdapter.clear();
+				imageResults.clear();
+				getImagesforSearchQuery(0);
+				return true;
+			}
+
+			@Override
+			public boolean onQueryTextChange(String newText) {
+				// TODO Auto-generated method stub
+				return false;
+			}
+		});
+
+		return super.onCreateOptionsMenu(menu);
 	}
+
+	/*@Override
+	public boolean onOptionsItemSelected(MenuItem mi) {
+		switch(mi.getItemId()) {
+			case R.id.miSearch:
+				MenuItem miSearch = (MenuItem)findViewById(R.id.miSearch);
+				//miSearch.
+		}
+
+		return false;
+	}*/
 
 	public void onSettingsIconClick(MenuItem mi) {
 		Intent i = new Intent(getApplicationContext(), SettingsActivity.class);
+		i.putExtra("searchTerm", searchStr);
 		startActivity(i);				
 	}
 
@@ -145,9 +144,34 @@ public class ImageSearchActivity extends Activity{
 		 getImagesforSearchQuery(searchStr, 0);
 	 }*/
 
-	public void getImagesforSearchQuery(String searchStr, final int offset) {		
+	public void getImagesforSearchQuery(final int offset) {		
 
 		try {
+			TextView searchInfo = (TextView) findViewById(R.id.tvSearchInfo);			
+
+			if(isDefault) {
+				if(calendar == null) {
+					calendar = Calendar.getInstance();
+				}
+
+				int month = calendar.get(Calendar.MONTH);
+				String season = "";
+				if(month >=1 && month <=3 || month ==12 )
+					season = "Winter";
+				else if(month >=4 && month <=7)
+					season = "Summer";
+				else if(month >= 8 && month <= 11)
+					season = "Fall";		
+				
+				searchStr = season + " Season";
+
+				searchInfo.setText("");
+				searchInfo.setText("It's " + season  + ". Enjoy some default pics on us!");
+			} else {
+				searchInfo.setText("");
+				searchInfo.setText("Results for: " + searchStr);
+			}
+
 			AsyncHttpClient asyncClient = new AsyncHttpClient();
 			String url = "https://ajax.googleapis.com/ajax/services/search/images?" + 
 					"rsz=8" +
